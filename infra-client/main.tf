@@ -134,9 +134,9 @@ resource "google_bigquery_table" "calls_table" {
 
   # Reference the GCS location of your CSV file
   external_data_configuration {
-    source_format = "CSV" # Specify the file format
-    autodetect    = true
-
+    source_format       = "CSV" # Specify the file format
+    autodetect          = true
+    metadata_cache_mode = "AUTOMATIC"
 
     source_uris = ["gs://${resource.google_storage_bucket.data_bucket.name}/${google_storage_bucket_object.calls_file.name}"] # Reference the GCS bucket
     # Optional: Configure how to handle leading rows (headers)
@@ -148,9 +148,9 @@ resource "google_bigquery_table" "calls_table" {
 }
 
 resource "google_bigquery_table" "calls_about_products_view" {
-  dataset_id = google_bigquery_dataset.customers_dataset.dataset_id
-  table_id   = "calls_about_products"
-  deletion_protection=false
+  dataset_id          = google_bigquery_dataset.customers_dataset.dataset_id
+  table_id            = "calls_about_products"
+  deletion_protection = false
 
   view {
     use_legacy_sql = false
@@ -201,9 +201,9 @@ resource "google_bigquery_dataset" "raw_data_exchange" {
 }
 
 resource "google_bigquery_table" "calls_about_products_view_raw" {
-  dataset_id = google_bigquery_dataset.raw_data_exchange.dataset_id
-  table_id   = "calls_about_products"
-  deletion_protection=false
+  dataset_id          = google_bigquery_dataset.raw_data_exchange.dataset_id
+  table_id            = "calls_about_products"
+  deletion_protection = false
 
   view {
     use_legacy_sql = false
@@ -223,12 +223,12 @@ resource "google_bigquery_table" "calls_about_products_view_raw" {
 }
 
 resource "google_bigquery_table" "calls_about_products_materialised_view_raw" {
-  dataset_id = google_bigquery_dataset.raw_data_exchange.dataset_id
-  table_id   = "calls_about_products_materialised"
-  deletion_protection=false
+  dataset_id          = google_bigquery_dataset.raw_data_exchange.dataset_id
+  table_id            = "calls_about_products_materialised"
+  deletion_protection = false
 
   materialized_view {
-    query          = <<SQLQUERY
+    query = <<SQLQUERY
       select
         sha256(email) hashedEmail,
         product,
